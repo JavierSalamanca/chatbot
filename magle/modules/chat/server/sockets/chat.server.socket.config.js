@@ -8,14 +8,32 @@ var conversation = "";
 // Create the chat configuration
 module.exports = function (io, socket) {
   // Emit the status event when a new socket client is connected
-
-    var objects = ["herencia", "clase", "subclase", "super", "metodo", "atributo", "sobre escritura", "clase objeto"];
-    var intentions = ["que", "como", "es", "ejemplo", "necestio", "cuando", "implementacion", "no comprendo"];
-
-
+    io.emit('chatMessage', {
+        type: 'status',
+        text: "Hola, yo soy Tutor bot y te puedo guiar en el aprendizaje de programacion orientada a objetos\n\n",
+        created: Date.now(),
+        profileImageURL: socket.request.user.profileImageURL,
+        username: socket.request.user.username
+    });
+    io.emit('chatMessage', {
+        type: 'status',
+        text: "Para saber cual es mi area de conocimiento pregunta por mis 'conocimientos'",
+        created: Date.now(),
+        profileImageURL: socket.request.user.profileImageURL,
+        username: socket.request.user.username
+    });
   io.emit('chatMessage', {
     type: 'status',
-    text: 'Is now connected',
+      text: "Mi area de conocimiento principal es: Herencia.\n" +
+      "mas especificamente seria:\n" +
+      "-Clases\n" +
+      "-Superclase\n" +
+      "-Subclase\n" +
+      "-Atributos\n" +
+      "-Metodos\n" +
+      "-Visibilidad \n" +
+      "-Sobrecarga\n" +
+      "-Sobreescritura\n",
     created: Date.now(),
     profileImageURL: socket.request.user.profileImageURL,
     username: socket.request.user.username
@@ -31,20 +49,39 @@ module.exports = function (io, socket) {
     if(conversation!=="") {
         client.converseText(message.text, conversation)
             .then(function (res) {
-                if (res.action) {
-                    console.log('Action: ', res.action.slug)
+                if(res.action !== "conocimiento") {
+                    if (res.action) {
+                        console.log('Action: ', res.action.slug)
+                    }
+                    const reply = res.reply();
+                    var action = res.action;
+                    var botReply = {
+                        created: Date.now(),
+                        text: reply,
+                        type: "message",
+                        profileImageURL: null,
+                        username: "Tutor bot"
+                    };
+                    io.emit('chatMessage', botReply);
+                }else{
+                    var botReply = {
+                        created: Date.now(),
+                        text: "Mi area de conocimiento principal es: Herencia\n" +
+                        "mas especificamente seria:\n" +
+                        "-Clases\n" +
+                        "-Superclase\n" +
+                        "-Subclase\n" +
+                        "-Atributos\n" +
+                        "-Metodos\n" +
+                        "-Visibilidad \n" +
+                        "-Sobrecarga\n" +
+                        "-Sobreescritura\n",
+                        type: "message",
+                        profileImageURL: null,
+                        username: "Tutor bot"
+                    };
+                    io.emit('chatMessage', botReply);
                 }
-                const reply = res.reply();
-                var action = res.action;
-                var botReply = {
-                    created: Date.now(),
-                    text: "",
-                    type: "message",
-                    profileImageURL: null,
-                    username: "Tutor bot"
-                };
-                io.emit('chatMessage', botReply);
-
             });
     }else{
         client.converseText(message.text)
