@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>config\config.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-elements">Elements</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                            </ul>
+                
+                                <ul id="api-elements" class="apis elements">
+                                    <li><a href="../elements/A.html">&lt;A&gt;</a></li>
+                                    <li><a href="../elements/ANY.html">&lt;ANY&gt;</a></li>
+                                    <li><a href="../elements/DETAILS.html">&lt;DETAILS&gt;</a></li>
+                                    <li><a href="../elements/form.html">&lt;form&gt;</a></li>
+                                    <li><a href="../elements/html.html">&lt;html&gt;</a></li>
+                                    <li><a href="../elements/IMG.html">&lt;IMG&gt;</a></li>
+                                    <li><a href="../elements/INPUT.html">&lt;INPUT&gt;</a></li>
+                                    <li><a href="../elements/input.html">&lt;input&gt;</a></li>
+                                    <li><a href="../elements/OPTION.html">&lt;OPTION&gt;</a></li>
+                                    <li><a href="../elements/window,.html">&lt;window,&gt;</a></li>
+                                </ul>
+                
+                            <ul id="api-modules" class="apis modules">
+                                <li><a href="../modules/ng.html">ng</a></li>
+                                <li><a href="../modules/ngMessages.html">ngMessages</a></li>
+                                <li><a href="../modules/ngMock.html">ngMock</a></li>
+                                <li><a href="../modules/ngMockE2E.html">ngMockE2E</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: config\config.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
+
+/**
+ * Module dependencies.
+ */
+var _ = require(&#x27;lodash&#x27;),
+  chalk = require(&#x27;chalk&#x27;),
+  glob = require(&#x27;glob&#x27;),
+  fs = require(&#x27;fs&#x27;),
+  path = require(&#x27;path&#x27;);
+
+/**
+ * Get files by glob patterns
+ */
+var getGlobbedPaths = function (globPatterns, excludes) {
+  // URL paths regex
+  var urlRegex = new RegExp(&#x27;^(?:[a-z]+:)?\/\/&#x27;, &#x27;i&#x27;);
+
+  // The output array
+  var output = [];
+
+  // If glob pattern is array then we use each pattern in a recursive way, otherwise we use glob
+  if (_.isArray(globPatterns)) {
+    globPatterns.forEach(function (globPattern) {
+      output = _.union(output, getGlobbedPaths(globPattern, excludes));
+    });
+  } else if (_.isString(globPatterns)) {
+    if (urlRegex.test(globPatterns)) {
+      output.push(globPatterns);
+    } else {
+      var files = glob.sync(globPatterns);
+      if (excludes) {
+        files = files.map(function (file) {
+          if (_.isArray(excludes)) {
+            for (var i in excludes) {
+              file = file.replace(excludes[i], &#x27;&#x27;);
+            }
+          } else {
+            file = file.replace(excludes, &#x27;&#x27;);
+          }
+          return file;
+        });
+      }
+      output = _.union(output, files);
+    }
+  }
+
+  return output;
+};
+
+/**
+ * Validate NODE_ENV existence
+ */
+var validateEnvironmentVariable = function () {
+  var environmentFiles = glob.sync(&#x27;./config/env/&#x27; + process.env.NODE_ENV + &#x27;.js&#x27;);
+  console.log();
+  if (!environmentFiles.length) {
+    if (process.env.NODE_ENV) {
+      console.error(chalk.red(&#x27;+ Error: No configuration file found for &quot;&#x27; + process.env.NODE_ENV + &#x27;&quot; environment using development instead&#x27;));
+    } else {
+      console.error(chalk.red(&#x27;+ Error: NODE_ENV is not defined! Using default development environment&#x27;));
+    }
+    process.env.NODE_ENV = &#x27;development&#x27;;
+  }
+  // Reset console color
+  console.log(chalk.white(&#x27;&#x27;));
+};
+
+/**
+ * Validate Secure=true parameter can actually be turned on
+ * because it requires certs and key files to be available
+ */
+var validateSecureMode = function (config) {
+
+  if (!config.secure || config.secure.ssl !== true) {
+    return true;
+  }
+
+  var privateKey = fs.existsSync(path.resolve(config.secure.privateKey));
+  var certificate = fs.existsSync(path.resolve(config.secure.certificate));
+
+  if (!privateKey || !certificate) {
+    console.log(chalk.red(&#x27;+ Error: Certificate file or key file is missing, falling back to non-SSL mode&#x27;));
+    console.log(chalk.red(&#x27;  To create them, simply run the following from your shell: sh ./scripts/generate-ssl-certs.sh&#x27;));
+    console.log();
+    config.secure.ssl = false;
+  }
+};
+
+/**
+ * Validate Session Secret parameter is not set to default in production
+ */
+var validateSessionSecret = function (config, testing) {
+
+  if (process.env.NODE_ENV !== &#x27;production&#x27;) {
+    return true;
+  }
+
+  if (config.sessionSecret === &#x27;MEAN&#x27;) {
+    if (!testing) {
+      console.log(chalk.red(&#x27;+ WARNING: It is strongly recommended that you change sessionSecret config while running in production!&#x27;));
+      console.log(chalk.red(&#x27;  Please add &#x60;sessionSecret: process.env.SESSION_SECRET || \&#x27;super amazing secret\&#x27;&#x60; to &#x27;));
+      console.log(chalk.red(&#x27;  &#x60;config/env/production.js&#x60; or &#x60;config/env/local.js&#x60;&#x27;));
+      console.log();
+    }
+    return false;
+  } else {
+    return true;
+  }
+};
+
+/**
+ * Initialize global configuration files
+ */
+var initGlobalConfigFolders = function (config, assets) {
+  // Appending files
+  config.folders = {
+    server: {},
+    client: {}
+  };
+
+  // Setting globbed client paths
+  config.folders.client = getGlobbedPaths(path.join(process.cwd(), &#x27;modules/*/client/&#x27;), process.cwd().replace(new RegExp(/\\/g), &#x27;/&#x27;));
+};
+
+/**
+ * Initialize global configuration files
+ */
+var initGlobalConfigFiles = function (config, assets) {
+  // Appending files
+  config.files = {
+    server: {},
+    client: {}
+  };
+
+  // Setting Globbed model files
+  config.files.server.models = getGlobbedPaths(assets.server.models);
+
+  // Setting Globbed route files
+  config.files.server.routes = getGlobbedPaths(assets.server.routes);
+
+  // Setting Globbed config files
+  config.files.server.configs = getGlobbedPaths(assets.server.config);
+
+  // Setting Globbed socket files
+  config.files.server.sockets = getGlobbedPaths(assets.server.sockets);
+
+  // Setting Globbed policies files
+  config.files.server.policies = getGlobbedPaths(assets.server.policies);
+
+  // Setting Globbed js files
+  config.files.client.js = getGlobbedPaths(assets.client.lib.js, &#x27;public/&#x27;).concat(getGlobbedPaths(assets.client.js, [&#x27;public/&#x27;]));
+
+  // Setting Globbed css files
+  config.files.client.css = getGlobbedPaths(assets.client.lib.css, &#x27;public/&#x27;).concat(getGlobbedPaths(assets.client.css, [&#x27;public/&#x27;]));
+
+  // Setting Globbed test files
+  config.files.client.tests = getGlobbedPaths(assets.client.tests);
+};
+
+/**
+ * Initialize global configuration
+ */
+var initGlobalConfig = function () {
+  // Validate NODE_ENV existence
+  validateEnvironmentVariable();
+
+  // Get the default assets
+  var defaultAssets = require(path.join(process.cwd(), &#x27;config/assets/default&#x27;));
+
+  // Get the current assets
+  var environmentAssets = require(path.join(process.cwd(), &#x27;config/assets/&#x27;, process.env.NODE_ENV)) || {};
+
+  // Merge assets
+  var assets = _.merge(defaultAssets, environmentAssets);
+
+  // Get the default config
+  var defaultConfig = require(path.join(process.cwd(), &#x27;config/env/default&#x27;));
+
+  // Get the current config
+  var environmentConfig = require(path.join(process.cwd(), &#x27;config/env/&#x27;, process.env.NODE_ENV)) || {};
+
+  // Merge config files
+  var config = _.merge(defaultConfig, environmentConfig);
+
+  // read package.json for MEAN.JS project information
+  var pkg = require(path.resolve(&#x27;./package.json&#x27;));
+  config.meanjs = pkg;
+
+  // We only extend the config object with the local.js custom/local environment if we are on
+  // production or development environment. If test environment is used we don&#x27;t merge it with local.js
+  // to avoid running test suites on a prod/dev environment (which delete records and make modifications)
+  if (process.env.NODE_ENV !== &#x27;test&#x27;) {
+    config = _.merge(config, (fs.existsSync(path.join(process.cwd(), &#x27;config/env/local.js&#x27;)) &amp;&amp; require(path.join(process.cwd(), &#x27;config/env/local.js&#x27;))) || {});
+  }
+
+  // Initialize global globbed files
+  initGlobalConfigFiles(config, assets);
+
+  // Initialize global globbed folders
+  initGlobalConfigFolders(config, assets);
+
+  // Validate Secure SSL mode can be used
+  validateSecureMode(config);
+
+  // Validate session secret
+  validateSessionSecret(config);
+
+  // Expose configuration utilities
+  config.utils = {
+    getGlobbedPaths: getGlobbedPaths,
+    validateSessionSecret: validateSessionSecret
+  };
+
+  return config;
+};
+
+/**
+ * Set configuration object
+ */
+module.exports = initGlobalConfig();
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

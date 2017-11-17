@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>Phaser Hello World</title>
+  <script src="js/lib/phaser.js"></script>
+  <script src="js/src/Boot.js"></script>
+  <script src="js/src/Preloader.js"></script>
+  <script src="js/src/MainMenu.js"></script>
+  <script src="js/src/Game.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-y: hidden;
+      overflow-x: hidden;
+      background-color: white;
+      text-align: center;
+    }
+
+    #container {
+      text-align: center;
+    }
+
+    canvas {
+      margin: 0px auto;
+    }
+
+  </style>
+</head>
+<body>
+<div id="container">
+  <div id="gameContainer" class="game-container"></div>
+</div>
+<script type="text/javascript">
+  //Phaser.Game = function (width, height, renderer, parent, state, transparent, antialias, physicsConfig) {
+  var game = new Phaser.Game(800, 600, Phaser.AUTO, "gameContainer");
+  game.state.add(PhaserHelloWorld.State.BOOT, PhaserHelloWorld.Boot);
+  game.state.add(PhaserHelloWorld.State.PRELOADER, PhaserHelloWorld.Preloader);
+  game.state.add(PhaserHelloWorld.State.MAIN_MENU, PhaserHelloWorld.MainMenu);
+  game.state.add(PhaserHelloWorld.State.GAME, PhaserHelloWorld.Game);
+  game.state.start(PhaserHelloWorld.State.BOOT);
+
+  var gameAPI = window.parent.gameAPI;
+  if (gameAPI) {
+    console.log(gameAPI);
+  } else {
+    alert("No GameAPI connection");
+    window.close();
+  }
+
+
+</script>
+</body>
+</html>

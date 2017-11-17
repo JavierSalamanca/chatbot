@@ -1,0 +1,22 @@
+<section>
+  <div class="page-header">
+    <h1>Modules</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="module in vm.modules"
+       ui-sref="modules.view({ moduleId: module._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="module.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="module.user" ng-bind="module.user.displayName"></span>
+        <span ng-if="!module.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="module.name"></h4>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.modules.$resolved && !vm.modules.length">
+    No Modules yet, why don't you <a ui-sref="modules.create">create one</a>?
+  </div>
+</section>

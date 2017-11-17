@@ -1,0 +1,56 @@
+<!-- The chat view -->
+<section class="container" ng-controller="ChatController">
+  <div class="page-header">
+    <h1>Chat Example</h1>
+  </div>
+  <!-- The message form -->
+
+  <ul class="list-unstyled">
+    <!-- List all messages -->
+
+  </ul>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-5">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <span class="glyphicon glyphicon-comment"></span> Tutor Bot
+          </div>
+          <div class="panel-body">
+            <ul class="chat">
+              <li class="left clearfix" ng-repeat="message in messages"><span class="chat-img pull-left">
+                            <img  ng-src="{{message.profileImageURL}}" alt="{{message.username}}" class="img-circle chat-profile-image" />
+                        </span>
+                <div class="chat-body clearfix">
+                  <div class="header">
+                    <strong class="primary-font" ng-bind="message.username"></strong> <small class="pull-right text-muted">
+                    <span class="glyphicon glyphicon-time" ></span><span ng-bind="message.created | date:'mediumTime'"></span></small>
+                  </div>
+                  <p ng-bind="message.text">
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="panel-footer">
+            <form ng-submit="sendMessage();">
+              <div class="input-group">
+
+                <input id="btn-input" type="text" class="form-control input-sm" ng-model="messageText" placeholder="Enter new message" />
+                <span class="input-group-btn">
+                            <button class="btn btn-warning btn-sm" id="btn-chat" ng-disabled="!messageText.length">
+                                Send</button>
+                        </span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+</section>
+

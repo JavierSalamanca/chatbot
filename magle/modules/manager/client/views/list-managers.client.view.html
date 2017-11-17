@@ -1,0 +1,24 @@
+<section>
+  <div class="page-header">
+    <h1>Managers <small>Modules</small></h1>
+  </div>
+  <div class="list-group">
+    <div ng-repeat="manager in vm.managers"
+
+       class="list-group-item">
+
+      <div class="pull-right">
+        <a class="btn btn-sm btn-info" ui-sref="environment.view({ managerId: manager._id })">View</a>
+        <a class="btn btn-sm btn-info" ui-sref="environment.edit({ managerId: manager._id })">Config</a>
+      </div>
+
+      <h4 class="list-group-item-heading" ><span ng-bind="manager.name"></span> <small ng-bind="manager.version"></small></h4>
+      <span ng-bind="manager.author"></span>
+      <p ng-bind="manager.description"></p>
+
+    </div>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.managers.$resolved && !vm.managers.length">
+    No Managers yet, why don't you <a ui-sref="managers.create">create one</a>?
+  </div>
+</section>

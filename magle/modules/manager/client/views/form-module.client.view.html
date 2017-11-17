@@ -1,0 +1,20 @@
+<section>
+  <div class="page-header">
+    <h1>Edit module configuration xxx</h1>
+  </div>
+
+  <div ng-if="manager && manager.form" class="col-md-12">
+    <json-form
+      form-schema="manager.form"
+      ng-model="manager.data"
+    ></json-form>
+    <button ng-click="save()">Save</button>
+<pre>{{manager.data | json}}</pre>
+
+  </div>
+
+  <div ng-if="!(manager && manager.form)" class="alert alert-warning text-center ng-scope" >
+    No configuration available
+  </div>
+
+</section>

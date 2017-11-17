@@ -1,0 +1,23 @@
+{
+  "name": "Users module",
+  "description": "This is a module to manage articles, as a simple module.",
+  "version": "0.0.1",
+  "author": "MAGLE Team",
+  "params": {
+    "itemName": {
+      "name": "Article",
+      "control": "select",
+      "alts": [
+        {
+          "id": "Article",
+          "name": "article"
+        },
+        {
+          "id": "Article",
+          "name": "article"
+        }
+      ]
+    },
+    "defaultName": "Article"
+  }
+}

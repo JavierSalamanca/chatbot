@@ -1,0 +1,41 @@
+{
+  "manifest": {
+    "version": "0.0.1"
+  },
+  "structure": {
+  },
+  "activity": {
+    "0034324": {
+      "interactives": {
+        "0001": {
+          "type": "choice",
+          "question": "¿Cuantos pokemon hay en el mundo?",
+          "alternatives": {
+            "02340234": {
+              "text": "0"
+            },
+            "02340236": {
+              "text": "150"
+            },
+            "02340233": {
+              "text": "200"
+            }
+          },
+          "config": {
+
+          },
+          "correct":["02340234"]
+        }
+      }
+    },
+    "0023423": {
+    }
+  },
+  "resources": {
+    "image": [
+      "4234324",
+      "4223342",
+      "4332340"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "MAGLE Framework",
+  "description": "Modular Adaptive and Gamified Learning Environment Framework",
+  "version": "0.0.1",
+  "logo": "../modules/core/client/img/brand/logo_mini.png",
+  "options": {
+    "linkNatives": "true",
+    "attributesEmit": "true",
+    "selleck": "true",
+    "ignorePaths": [
+      "simpleyui"
+    ],
+    "paths": "./modules/",
+    "outdir": "./jsdoc"
+  }
+}

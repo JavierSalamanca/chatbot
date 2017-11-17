@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link href="./bootstrap.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #2b669a;
+      background-image: url('http://68.media.tumblr.com/tumblr_m7ltfgVWAT1rubu3ro1_1280.jpg');
+      background-size:  100%;
+      background-repeat: no-repeat;
+      font-size: 14px;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <!-- Component: text  // start -->
+      <h2>¿Cual era la cantidad total de Pokemon en la primera temporada?</h2>
+      <hr>
+      <!-- Component : text // end -->
+    </div>
+    <div class="col-sm-6">
+      <!-- Component : image  // start -->
+      <img src="https://www.w3schools.com/css/img_fjords.jpg" />
+      <!-- Component : image // end -->
+    </div>
+    <div class="col-sm-6">
+      <!-- Component : multiple-selection  // start -->
+      <ul>
+        <li onclick="reply(0)">50</li>
+        <li onclick="reply(1)">100</li>
+        <li onclick="reply(2)">150</li>
+        <li onclick="reply(3)">200</li>
+      </ul>
+      <!-- Component : multiple-selection // end -->
+    </div>
+  </div>
+</div>
+<ul>
+  <li></li>
+  <li></li>
+  <li></li>
+  <li></li>
+</ul>
+<script>
+  function reply(rep){
+    console.log("USER RESPONSES: " + rep);
+  }
+
+</script>
+</body>
+</html>

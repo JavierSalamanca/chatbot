@@ -1,0 +1,116 @@
+<section>
+  <div class="page-header">
+    <ul class="list-inline pull-right">
+      <li><a href="#"><i class="glyphicon glyphicon-cog"></i></a></li>
+      <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
+
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">1. Is there a way..</a></li>
+          <li><a href="#">2. Hello, admin. I would..</a></li>
+          <li><a href="#"><strong>All messages</strong></a></li>
+        </ul>
+      </li>
+      <li><a href="#"><i class="glyphicon glyphicon-user"></i></a></li>
+      <li><a title="Add Widget" data-toggle="modal" href="#addWidgetModal"><span
+        class="glyphicon glyphicon-plus-sign"></span> Add Widget</a></li>
+    </ul>
+    <h1>Dashboard</h1>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+
+
+      <div class="row">
+
+
+        <!-- center left-->
+        <div class="col-md-6">
+          <div class="well">
+
+            <div class="col-md-2 column pull-right">
+              <img class="img-thumbnail" ng-src="{{vm.profile.user.profileImageURL}}"/>
+            </div>
+            <h4>
+              {{vm.profile.user.displayName}}
+            </h4>
+            <p><b>Email</b>: {{vm.profile.user.email}} </p>
+            <p><b>Username</b>: {{vm.profile.user.username}}</p>
+
+          </div>
+
+          <hr>
+
+          <div class="btn-group btn-group-justified">
+            <a href="#" class="btn btn-primary col-sm-3">
+              <i class="glyphicon glyphicon-plus"></i><br>
+              Service
+            </a>
+            <a href="#" class="btn btn-primary col-sm-3">
+              <i class="glyphicon glyphicon-cloud"></i><br>
+              Cloud
+            </a>
+            <a href="#" class="btn btn-primary col-sm-3">
+              <i class="glyphicon glyphicon-cog"></i><br>
+              Tools
+            </a>
+            <a href="#" class="btn btn-primary col-sm-3">
+              <i class="glyphicon glyphicon-question-sign"></i><br>
+              Help
+            </a>
+          </div>
+
+          <hr>
+
+
+          <div class="panel panel-default">
+            <div class="panel-body">
+
+              <li ng-repeat="item in adminbar.items | orderBy: 'position'"
+                  ng-if="item.shouldRender(authentication.user);" ng-switch="item.type"
+                  ng-class="{ active: $state.includes(item.state), dropdown: item.type === 'dropdown' }"
+                  class="{{item.class}}" dropdown="item.type === 'dropdown'">
+                <a ng-switch-when="dropdown" class="dropdown-toggle" dropdown-toggle role="button">{{::item.title}}&nbsp;<span
+                  class="caret"></span></a>
+                <ul ng-switch-when="dropdown" class="dropdown-menu">
+                  <li ng-repeat="subitem in item.items | orderBy: 'position'"
+                      ng-if="subitem.shouldRender(authentication.user);" ui-sref-active="active">
+                    <a ui-sref="{{subitem.state}}" ng-bind="subitem.title"></a>
+                  </li>
+                </ul>
+                <a ng-switch-default ui-sref="{{item.state}}" ng-bind="item.title"></a>
+              </li>
+
+
+              <pre>
+
+                {{adminbar | json}}
+              </pre>
+
+              <div class="list-group">
+
+                <!-- Item module -->
+                <div class="list-group-item">
+                  <h4><i class="glyphicon glyphicon-user"></i>&nbsp;Users</h4>
+                  <div class="list-group">
+                    <!-- Item submodule -->
+                    <a href="#" class="list-group-item">Dedicated server doesn't..</a>
+                    <a href="#" class="list-group-item">RHEL 6 install on new..</a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div><!--/col-->
+
+
+      </div><!--/row-->
+
+
+    </div><!--/col-span-9-->
+  </div>
+
+
+</section>

@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>modules\users\tests\server\user.server.routes.tests.js - MAGLE Framework</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="..\..\modules\core\client\img\brand\logo.png" title="MAGLE Framework"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-elements">Elements</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                            </ul>
+                
+                                <ul id="api-elements" class="apis elements">
+                                    <li><a href="../elements/A.html">&lt;A&gt;</a></li>
+                                    <li><a href="../elements/ANY.html">&lt;ANY&gt;</a></li>
+                                    <li><a href="../elements/DETAILS.html">&lt;DETAILS&gt;</a></li>
+                                    <li><a href="../elements/form.html">&lt;form&gt;</a></li>
+                                    <li><a href="../elements/html.html">&lt;html&gt;</a></li>
+                                    <li><a href="../elements/IMG.html">&lt;IMG&gt;</a></li>
+                                    <li><a href="../elements/INPUT.html">&lt;INPUT&gt;</a></li>
+                                    <li><a href="../elements/input.html">&lt;input&gt;</a></li>
+                                    <li><a href="../elements/OPTION.html">&lt;OPTION&gt;</a></li>
+                                    <li><a href="../elements/window,.html">&lt;window,&gt;</a></li>
+                                </ul>
+                
+                            <ul id="api-modules" class="apis modules">
+                                <li><a href="../modules/ng.html">ng</a></li>
+                                <li><a href="../modules/ngMessages.html">ngMessages</a></li>
+                                <li><a href="../modules/ngMock.html">ngMock</a></li>
+                                <li><a href="../modules/ngMockE2E.html">ngMockE2E</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: modules\users\tests\server\user.server.routes.tests.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
+
+var should = require(&#x27;should&#x27;),
+  request = require(&#x27;supertest&#x27;),
+  path = require(&#x27;path&#x27;),
+  mongoose = require(&#x27;mongoose&#x27;),
+  User = mongoose.model(&#x27;User&#x27;),
+  express = require(path.resolve(&#x27;./config/lib/express&#x27;));
+
+/**
+ * Globals
+ */
+var app, agent, credentials, user, _user, admin;
+
+/**
+ * User routes tests
+ */
+describe(&#x27;User CRUD tests&#x27;, function () {
+
+  before(function (done) {
+    // Get application
+    app = express.init(mongoose);
+    agent = request.agent(app);
+
+    done();
+  });
+
+  beforeEach(function (done) {
+    // Create user credentials
+    credentials = {
+      username: &#x27;username&#x27;,
+      password: &#x27;M3@n.jsI$Aw3$0m3&#x27;
+    };
+
+    // Create a new user
+    _user = {
+      firstName: &#x27;Full&#x27;,
+      lastName: &#x27;Name&#x27;,
+      displayName: &#x27;Full Name&#x27;,
+      email: &#x27;test@test.com&#x27;,
+      username: credentials.username,
+      password: credentials.password,
+      provider: &#x27;local&#x27;
+    };
+
+    user = new User(_user);
+
+    // Save a user to the test db and create new article
+    user.save(function (err) {
+      should.not.exist(err);
+      done();
+    });
+  });
+
+  it(&#x27;should be able to register a new user&#x27;, function (done) {
+
+    _user.username = &#x27;register_new_user&#x27;;
+    _user.email = &#x27;register_new_user_@test.com&#x27;;
+
+    agent.post(&#x27;/api/auth/signup&#x27;)
+      .send(_user)
+      .expect(200)
+      .end(function (signupErr, signupRes) {
+        // Handle signpu error
+        if (signupErr) {
+          return done(signupErr);
+        }
+
+        signupRes.body.username.should.equal(_user.username);
+        signupRes.body.email.should.equal(_user.email);
+        // Assert a proper profile image has been set, even if by default
+        signupRes.body.profileImageURL.should.not.be.empty();
+        // Assert we have just the default &#x27;user&#x27; role
+        signupRes.body.roles.should.be.instanceof(Array).and.have.lengthOf(1);
+        signupRes.body.roles.indexOf(&#x27;user&#x27;).should.equal(0);
+        return done();
+      });
+  });
+
+  it(&#x27;should be able to login successfully and logout successfully&#x27;, function (done) {
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Logout
+        agent.get(&#x27;/api/auth/signout&#x27;)
+          .expect(302)
+          .end(function (signoutErr, signoutRes) {
+            if (signoutErr) {
+              return done(signoutErr);
+            }
+
+            signoutRes.redirect.should.equal(true);
+
+            // NodeJS v4 changed the status code representation so we must check
+            // before asserting, to be comptabile with all node versions.
+            if (process.version.indexOf(&#x27;v4&#x27;) === 0) {
+              signoutRes.text.should.equal(&#x27;Found. Redirecting to /&#x27;);
+            } else {
+              signoutRes.text.should.equal(&#x27;Moved Temporarily. Redirecting to /&#x27;);
+            }
+
+            return done();
+          });
+      });
+  });
+
+  it(&#x27;should not be able to retrieve a list of users if not admin&#x27;, function (done) {
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Request list of users
+        agent.get(&#x27;/api/users&#x27;)
+          .expect(403)
+          .end(function (usersGetErr, usersGetRes) {
+            if (usersGetErr) {
+              return done(usersGetErr);
+            }
+
+            return done();
+          });
+      });
+  });
+
+  it(&#x27;should be able to retrieve a list of users if admin&#x27;, function (done) {
+    user.roles = [&#x27;user&#x27;, &#x27;admin&#x27;];
+
+    user.save(function (err) {
+      should.not.exist(err);
+      agent.post(&#x27;/api/auth/signin&#x27;)
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+
+          // Request list of users
+          agent.get(&#x27;/api/users&#x27;)
+            .expect(200)
+            .end(function (usersGetErr, usersGetRes) {
+              if (usersGetErr) {
+                return done(usersGetErr);
+              }
+
+              usersGetRes.body.should.be.instanceof(Array).and.have.lengthOf(1);
+
+              // Call the assertion callback
+              return done();
+            });
+        });
+    });
+  });
+
+  it(&#x27;should be able to get a single user details if admin&#x27;, function (done) {
+    user.roles = [&#x27;user&#x27;, &#x27;admin&#x27;];
+
+    user.save(function (err) {
+      should.not.exist(err);
+      agent.post(&#x27;/api/auth/signin&#x27;)
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+
+          // Get single user information from the database
+          agent.get(&#x27;/api/users/&#x27; + user._id)
+            .expect(200)
+            .end(function (userInfoErr, userInfoRes) {
+              if (userInfoErr) {
+                return done(userInfoErr);
+              }
+
+              userInfoRes.body.should.be.instanceof(Object);
+              userInfoRes.body._id.should.be.equal(String(user._id));
+
+              // Call the assertion callback
+              return done();
+            });
+        });
+    });
+  });
+
+  it(&#x27;should be able to update a single user details if admin&#x27;, function (done) {
+    user.roles = [&#x27;user&#x27;, &#x27;admin&#x27;];
+
+    user.save(function (err) {
+      should.not.exist(err);
+      agent.post(&#x27;/api/auth/signin&#x27;)
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+
+          // Get single user information from the database
+
+          var userUpdate = {
+            firstName: &#x27;admin_update_first&#x27;,
+            lastName: &#x27;admin_update_last&#x27;,
+            roles: [&#x27;admin&#x27;]
+          };
+
+          agent.put(&#x27;/api/users/&#x27; + user._id)
+            .send(userUpdate)
+            .expect(200)
+            .end(function (userInfoErr, userInfoRes) {
+              if (userInfoErr) {
+                return done(userInfoErr);
+              }
+
+              userInfoRes.body.should.be.instanceof(Object);
+              userInfoRes.body.firstName.should.be.equal(&#x27;admin_update_first&#x27;);
+              userInfoRes.body.lastName.should.be.equal(&#x27;admin_update_last&#x27;);
+              userInfoRes.body.roles.should.be.instanceof(Array).and.have.lengthOf(1);
+              userInfoRes.body._id.should.be.equal(String(user._id));
+
+              // Call the assertion callback
+              return done();
+            });
+        });
+    });
+  });
+
+  it(&#x27;should be able to delete a single user if admin&#x27;, function (done) {
+    user.roles = [&#x27;user&#x27;, &#x27;admin&#x27;];
+
+    user.save(function (err) {
+      should.not.exist(err);
+      agent.post(&#x27;/api/auth/signin&#x27;)
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+
+          agent.delete(&#x27;/api/users/&#x27; + user._id)
+            //.send(userUpdate)
+            .expect(200)
+            .end(function (userInfoErr, userInfoRes) {
+              if (userInfoErr) {
+                return done(userInfoErr);
+              }
+
+              userInfoRes.body.should.be.instanceof(Object);
+              userInfoRes.body._id.should.be.equal(String(user._id));
+
+              // Call the assertion callback
+              return done();
+            });
+        });
+    });
+  });
+
+  it(&#x27;forgot password should return 400 for non-existent username&#x27;, function (done) {
+    user.roles = [&#x27;user&#x27;];
+
+    user.save(function (err) {
+      should.not.exist(err);
+      agent.post(&#x27;/api/auth/forgot&#x27;)
+        .send({
+          username: &#x27;some_username_that_doesnt_exist&#x27;
+        })
+        .expect(400)
+        .end(function (err, res) {
+          // Handle error
+          if (err) {
+            return done(err);
+          }
+
+          res.body.message.should.equal(&#x27;No account with that username has been found&#x27;);
+          return done();
+        });
+    });
+  });
+
+  it(&#x27;forgot password should return 400 for no username provided&#x27;, function (done) {
+    var provider = &#x27;facebook&#x27;;
+    user.provider = provider;
+    user.roles = [&#x27;user&#x27;];
+
+    user.save(function (err) {
+      should.not.exist(err);
+      agent.post(&#x27;/api/auth/forgot&#x27;)
+        .send({
+          username: &#x27;&#x27;
+        })
+        .expect(400)
+        .end(function (err, res) {
+          // Handle error
+          if (err) {
+            return done(err);
+          }
+
+          res.body.message.should.equal(&#x27;Username field must not be blank&#x27;);
+          return done();
+        });
+    });
+  });
+
+  it(&#x27;forgot password should return 400 for non-local provider set for the user object&#x27;, function (done) {
+    var provider = &#x27;facebook&#x27;;
+    user.provider = provider;
+    user.roles = [&#x27;user&#x27;];
+
+    user.save(function (err) {
+      should.not.exist(err);
+      agent.post(&#x27;/api/auth/forgot&#x27;)
+        .send({
+          username: user.username
+        })
+        .expect(400)
+        .end(function (err, res) {
+          // Handle error
+          if (err) {
+            return done(err);
+          }
+
+          res.body.message.should.equal(&#x27;It seems like you signed up using your &#x27; + user.provider + &#x27; account&#x27;);
+          return done();
+        });
+    });
+  });
+
+  it(&#x27;forgot password should be able to reset password for user password reset request&#x27;, function (done) {
+    user.roles = [&#x27;user&#x27;];
+
+    user.save(function (err) {
+      should.not.exist(err);
+      agent.post(&#x27;/api/auth/forgot&#x27;)
+        .send({
+          username: user.username
+        })
+        .expect(400)
+        .end(function (err, res) {
+          // Handle error
+          if (err) {
+            return done(err);
+          }
+
+          User.findOne({ username: user.username.toLowerCase() }, function(err, userRes) {
+            userRes.resetPasswordToken.should.not.be.empty();
+            should.exist(userRes.resetPasswordExpires);
+            res.body.message.should.be.equal(&#x27;Failure sending email&#x27;);
+            return done();
+          });
+        });
+    });
+  });
+
+  it(&#x27;forgot password should be able to reset the password using reset token&#x27;, function (done) {
+    user.roles = [&#x27;user&#x27;];
+
+    user.save(function (err) {
+      should.not.exist(err);
+      agent.post(&#x27;/api/auth/forgot&#x27;)
+        .send({
+          username: user.username
+        })
+        .expect(400)
+        .end(function (err, res) {
+          // Handle error
+          if (err) {
+            return done(err);
+          }
+
+          User.findOne({ username: user.username.toLowerCase() }, function(err, userRes) {
+            userRes.resetPasswordToken.should.not.be.empty();
+            should.exist(userRes.resetPasswordExpires);
+
+            agent.get(&#x27;/api/auth/reset/&#x27; + userRes.resetPasswordToken)
+            .expect(302)
+            .end(function (err, res) {
+              // Handle error
+              if (err) {
+                return done(err);
+              }
+
+              res.headers.location.should.be.equal(&#x27;/password/reset/&#x27; + userRes.resetPasswordToken);
+
+              return done();
+            });
+          });
+        });
+    });
+  });
+
+  it(&#x27;forgot password should return error when using invalid reset token&#x27;, function (done) {
+    user.roles = [&#x27;user&#x27;];
+
+    user.save(function (err) {
+      should.not.exist(err);
+      agent.post(&#x27;/api/auth/forgot&#x27;)
+        .send({
+          username: user.username
+        })
+        .expect(400)
+        .end(function (err, res) {
+          // Handle error
+          if (err) {
+            return done(err);
+          }
+
+          var invalidToken = &#x27;someTOKEN1234567890&#x27;;
+          agent.get(&#x27;/api/auth/reset/&#x27; + invalidToken)
+          .expect(302)
+          .end(function (err, res) {
+            // Handle error
+            if (err) {
+              return done(err);
+            }
+
+            res.headers.location.should.be.equal(&#x27;/password/reset/invalid&#x27;);
+
+            return done();
+          });
+        });
+    });
+  });
+
+  it(&#x27;should be able to change user own password successfully&#x27;, function (done) {
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Change password
+        agent.post(&#x27;/api/users/password&#x27;)
+          .send({
+            newPassword: &#x27;1234567890Aa$&#x27;,
+            verifyPassword: &#x27;1234567890Aa$&#x27;,
+            currentPassword: credentials.password
+          })
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            res.body.message.should.equal(&#x27;Password changed successfully&#x27;);
+            return done();
+          });
+      });
+  });
+
+  it(&#x27;should not be able to change user own password if wrong verifyPassword is given&#x27;, function (done) {
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Change password
+        agent.post(&#x27;/api/users/password&#x27;)
+          .send({
+            newPassword: &#x27;1234567890Aa$&#x27;,
+            verifyPassword: &#x27;1234567890-ABC-123-Aa$&#x27;,
+            currentPassword: credentials.password
+          })
+          .expect(400)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            res.body.message.should.equal(&#x27;Passwords do not match&#x27;);
+            return done();
+          });
+      });
+  });
+
+  it(&#x27;should not be able to change user own password if wrong currentPassword is given&#x27;, function (done) {
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Change password
+        agent.post(&#x27;/api/users/password&#x27;)
+          .send({
+            newPassword: &#x27;1234567890Aa$&#x27;,
+            verifyPassword: &#x27;1234567890Aa$&#x27;,
+            currentPassword: &#x27;some_wrong_passwordAa$&#x27;
+          })
+          .expect(400)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            res.body.message.should.equal(&#x27;Current password is incorrect&#x27;);
+            return done();
+          });
+      });
+  });
+
+  it(&#x27;should not be able to change user own password if no new password is at all given&#x27;, function (done) {
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Change password
+        agent.post(&#x27;/api/users/password&#x27;)
+          .send({
+            newPassword: &#x27;&#x27;,
+            verifyPassword: &#x27;&#x27;,
+            currentPassword: credentials.password
+          })
+          .expect(400)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            res.body.message.should.equal(&#x27;Please provide a new password&#x27;);
+            return done();
+          });
+      });
+  });
+
+  it(&#x27;should not be able to change user own password if no new password is at all given&#x27;, function (done) {
+
+    // Change password
+    agent.post(&#x27;/api/users/password&#x27;)
+      .send({
+        newPassword: &#x27;1234567890Aa$&#x27;,
+        verifyPassword: &#x27;1234567890Aa$&#x27;,
+        currentPassword: credentials.password
+      })
+      .expect(400)
+      .end(function (err, res) {
+        if (err) {
+          return done(err);
+        }
+
+        res.body.message.should.equal(&#x27;User is not signed in&#x27;);
+        return done();
+      });
+  });
+
+  it(&#x27;should be able to get own user details successfully&#x27;, function (done) {
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get own user details
+        agent.get(&#x27;/api/users/me&#x27;)
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              return done(err);
+            }
+
+            res.body.should.be.instanceof(Object);
+            res.body.username.should.equal(user.username);
+            res.body.email.should.equal(user.email);
+            should.not.exist(res.body.salt);
+            should.not.exist(res.body.password);
+            return done();
+          });
+      });
+  });
+
+  it(&#x27;should not be able to get any user details if not logged in&#x27;, function (done) {
+    // Get own user details
+    agent.get(&#x27;/api/users/me&#x27;)
+      .expect(200)
+      .end(function (err, res) {
+        if (err) {
+          return done(err);
+        }
+
+        should.not.exist(res.body);
+        return done();
+      });
+  });
+
+  it(&#x27;should be able to update own user details&#x27;, function (done) {
+    user.roles = [&#x27;user&#x27;];
+
+    user.save(function (err) {
+      should.not.exist(err);
+      agent.post(&#x27;/api/auth/signin&#x27;)
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+
+          var userUpdate = {
+            firstName: &#x27;user_update_first&#x27;,
+            lastName: &#x27;user_update_last&#x27;,
+          };
+
+          agent.put(&#x27;/api/users&#x27;)
+            .send(userUpdate)
+            .expect(200)
+            .end(function (userInfoErr, userInfoRes) {
+              if (userInfoErr) {
+                return done(userInfoErr);
+              }
+
+              userInfoRes.body.should.be.instanceof(Object);
+              userInfoRes.body.firstName.should.be.equal(&#x27;user_update_first&#x27;);
+              userInfoRes.body.lastName.should.be.equal(&#x27;user_update_last&#x27;);
+              userInfoRes.body.roles.should.be.instanceof(Array).and.have.lengthOf(1);
+              userInfoRes.body.roles.indexOf(&#x27;user&#x27;).should.equal(0);
+              userInfoRes.body._id.should.be.equal(String(user._id));
+
+              // Call the assertion callback
+              return done();
+            });
+        });
+    });
+  });
+
+  it(&#x27;should not be able to update own user details and add roles if not admin&#x27;, function (done) {
+    user.roles = [&#x27;user&#x27;];
+
+    user.save(function (err) {
+      should.not.exist(err);
+      agent.post(&#x27;/api/auth/signin&#x27;)
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+
+          var userUpdate = {
+            firstName: &#x27;user_update_first&#x27;,
+            lastName: &#x27;user_update_last&#x27;,
+            roles: [&#x27;user&#x27;, &#x27;admin&#x27;]
+          };
+
+          agent.put(&#x27;/api/users&#x27;)
+            .send(userUpdate)
+            .expect(200)
+            .end(function (userInfoErr, userInfoRes) {
+              if (userInfoErr) {
+                return done(userInfoErr);
+              }
+
+              userInfoRes.body.should.be.instanceof(Object);
+              userInfoRes.body.firstName.should.be.equal(&#x27;user_update_first&#x27;);
+              userInfoRes.body.lastName.should.be.equal(&#x27;user_update_last&#x27;);
+              userInfoRes.body.roles.should.be.instanceof(Array).and.have.lengthOf(1);
+              userInfoRes.body.roles.indexOf(&#x27;user&#x27;).should.equal(0);
+              userInfoRes.body._id.should.be.equal(String(user._id));
+
+              // Call the assertion callback
+              return done();
+            });
+        });
+    });
+  });
+
+  it(&#x27;should not be able to update own user details with existing username&#x27;, function (done) {
+
+    var _user2 = _user;
+
+    _user2.username = &#x27;user2_username&#x27;;
+    _user2.email = &#x27;user2_email@test.com&#x27;;
+
+    var credentials2 = {
+      username: &#x27;username2&#x27;,
+      password: &#x27;M3@n.jsI$Aw3$0m3&#x27;
+    };
+
+    _user2.username = credentials2.username;
+    _user2.password = credentials2.password;
+
+    var user2 = new User(_user2);
+
+    user2.save(function (err) {
+      should.not.exist(err);
+
+      agent.post(&#x27;/api/auth/signin&#x27;)
+        .send(credentials2)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+
+          var userUpdate = {
+            firstName: &#x27;user_update_first&#x27;,
+            lastName: &#x27;user_update_last&#x27;,
+            username: user.username
+          };
+
+          agent.put(&#x27;/api/users&#x27;)
+            .send(userUpdate)
+            .expect(400)
+            .end(function (userInfoErr, userInfoRes) {
+              if (userInfoErr) {
+                return done(userInfoErr);
+              }
+
+              // Call the assertion callback
+              userInfoRes.body.message.should.equal(&#x27;Username already exists&#x27;);
+
+              return done();
+            });
+        });
+    });
+  });
+
+  it(&#x27;should not be able to update own user details with existing email&#x27;, function (done) {
+
+    var _user2 = _user;
+
+    _user2.username = &#x27;user2_username&#x27;;
+    _user2.email = &#x27;user2_email@test.com&#x27;;
+
+    var credentials2 = {
+      username: &#x27;username2&#x27;,
+      password: &#x27;M3@n.jsI$Aw3$0m3&#x27;
+    };
+
+    _user2.username = credentials2.username;
+    _user2.password = credentials2.password;
+
+    var user2 = new User(_user2);
+
+    user2.save(function (err) {
+      should.not.exist(err);
+
+      agent.post(&#x27;/api/auth/signin&#x27;)
+        .send(credentials2)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+
+          var userUpdate = {
+            firstName: &#x27;user_update_first&#x27;,
+            lastName: &#x27;user_update_last&#x27;,
+            email: user.email
+          };
+
+          agent.put(&#x27;/api/users&#x27;)
+            .send(userUpdate)
+            .expect(400)
+            .end(function (userInfoErr, userInfoRes) {
+              if (userInfoErr) {
+                return done(userInfoErr);
+              }
+
+              // Call the assertion callback
+              userInfoRes.body.message.should.equal(&#x27;Email already exists&#x27;);
+
+              return done();
+            });
+        });
+    });
+  });
+
+  it(&#x27;should not be able to update own user details if not logged-in&#x27;, function (done) {
+    user.roles = [&#x27;user&#x27;];
+
+    user.save(function (err) {
+
+      should.not.exist(err);
+
+      var userUpdate = {
+        firstName: &#x27;user_update_first&#x27;,
+        lastName: &#x27;user_update_last&#x27;,
+      };
+
+      agent.put(&#x27;/api/users&#x27;)
+        .send(userUpdate)
+        .expect(400)
+        .end(function (userInfoErr, userInfoRes) {
+          if (userInfoErr) {
+            return done(userInfoErr);
+          }
+
+          userInfoRes.body.message.should.equal(&#x27;User is not signed in&#x27;);
+
+          // Call the assertion callback
+          return done();
+        });
+    });
+  });
+
+  it(&#x27;should not be able to update own user profile picture without being logged-in&#x27;, function (done) {
+
+    agent.post(&#x27;/api/users/picture&#x27;)
+      .send({})
+      .expect(400)
+      .end(function (userInfoErr, userInfoRes) {
+        if (userInfoErr) {
+          return done(userInfoErr);
+        }
+
+        userInfoRes.body.message.should.equal(&#x27;User is not signed in&#x27;);
+
+        // Call the assertion callback
+        return done();
+      });
+  });
+
+  it(&#x27;should be able to change profile picture if signed in&#x27;, function (done) {
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        agent.post(&#x27;/api/users/picture&#x27;)
+          .attach(&#x27;newProfilePicture&#x27;, &#x27;./modules/users/client/img/profile/default.png&#x27;)
+          .send(credentials)
+          .expect(200)
+          .end(function (userInfoErr, userInfoRes) {
+            // Handle change profile picture error
+            if (userInfoErr) {
+              return done(userInfoErr);
+            }
+
+            userInfoRes.body.should.be.instanceof(Object);
+            userInfoRes.body.profileImageURL.should.be.a.String();
+            userInfoRes.body._id.should.be.equal(String(user._id));
+
+            return done();
+          });
+      });
+  });
+
+  it(&#x27;should not be able to change profile picture if attach a picture with a different field name&#x27;, function (done) {
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        agent.post(&#x27;/api/users/picture&#x27;)
+          .attach(&#x27;fieldThatDoesntWork&#x27;, &#x27;./modules/users/client/img/profile/default.png&#x27;)
+          .send(credentials)
+          .expect(400)
+          .end(function (userInfoErr, userInfoRes) {
+            done(userInfoErr);
+          });
+      });
+  });
+
+  afterEach(function (done) {
+    User.remove().exec(done);
+  });
+});
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

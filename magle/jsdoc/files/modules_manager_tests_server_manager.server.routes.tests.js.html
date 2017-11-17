@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>modules\manager\tests\server\manager.server.routes.tests.js - MAGLE Framework</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="..\..\modules\core\client\img\brand\logo.png" title="MAGLE Framework"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-elements">Elements</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                            </ul>
+                
+                                <ul id="api-elements" class="apis elements">
+                                    <li><a href="../elements/A.html">&lt;A&gt;</a></li>
+                                    <li><a href="../elements/ANY.html">&lt;ANY&gt;</a></li>
+                                    <li><a href="../elements/DETAILS.html">&lt;DETAILS&gt;</a></li>
+                                    <li><a href="../elements/form.html">&lt;form&gt;</a></li>
+                                    <li><a href="../elements/html.html">&lt;html&gt;</a></li>
+                                    <li><a href="../elements/IMG.html">&lt;IMG&gt;</a></li>
+                                    <li><a href="../elements/INPUT.html">&lt;INPUT&gt;</a></li>
+                                    <li><a href="../elements/input.html">&lt;input&gt;</a></li>
+                                    <li><a href="../elements/OPTION.html">&lt;OPTION&gt;</a></li>
+                                    <li><a href="../elements/window,.html">&lt;window,&gt;</a></li>
+                                </ul>
+                
+                            <ul id="api-modules" class="apis modules">
+                                <li><a href="../modules/ng.html">ng</a></li>
+                                <li><a href="../modules/ngMessages.html">ngMessages</a></li>
+                                <li><a href="../modules/ngMock.html">ngMock</a></li>
+                                <li><a href="../modules/ngMockE2E.html">ngMockE2E</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: modules\manager\tests\server\manager.server.routes.tests.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
+
+var should = require(&#x27;should&#x27;),
+  request = require(&#x27;supertest&#x27;),
+  path = require(&#x27;path&#x27;),
+  mongoose = require(&#x27;mongoose&#x27;),
+  User = mongoose.model(&#x27;User&#x27;),
+  Manager = mongoose.model(&#x27;Manager&#x27;),
+  express = require(path.resolve(&#x27;./config/lib/express&#x27;));
+
+/**
+ * Globals
+ */
+var app,
+  agent,
+  credentials,
+  user,
+  manager;
+
+/**
+ * Manager routes tests
+ */
+describe(&#x27;Manager CRUD tests&#x27;, function () {
+
+  before(function (done) {
+    // Get application
+    app = express.init(mongoose);
+    agent = request.agent(app);
+
+    done();
+  });
+
+  beforeEach(function (done) {
+    // Create user credentials
+    credentials = {
+      username: &#x27;username&#x27;,
+      password: &#x27;M3@n.jsI$Aw3$0m3&#x27;
+    };
+
+    // Create a new user
+    user = new User({
+      firstName: &#x27;Full&#x27;,
+      lastName: &#x27;Name&#x27;,
+      displayName: &#x27;Full Name&#x27;,
+      email: &#x27;test@test.com&#x27;,
+      username: credentials.username,
+      password: credentials.password,
+      provider: &#x27;local&#x27;
+    });
+
+    // Save a user to the test db and create new Manager
+    user.save(function () {
+      manager = {
+        name: &#x27;Manager name&#x27;
+      };
+
+      done();
+    });
+  });
+
+  it(&#x27;should be able to save a Manager if logged in&#x27;, function (done) {
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new Manager
+        agent.post(&#x27;/api/managers&#x27;)
+          .send(manager)
+          .expect(200)
+          .end(function (managerSaveErr, managerSaveRes) {
+            // Handle Manager save error
+            if (managerSaveErr) {
+              return done(managerSaveErr);
+            }
+
+            // Get a list of Managers
+            agent.get(&#x27;/api/managers&#x27;)
+              .end(function (managersGetErr, managersGetRes) {
+                // Handle Managers save error
+                if (managersGetErr) {
+                  return done(managersGetErr);
+                }
+
+                // Get Managers list
+                var managers = managersGetRes.body;
+
+                // Set assertions
+                (managers[0].user._id).should.equal(userId);
+                (managers[0].name).should.match(&#x27;Manager name&#x27;);
+
+                // Call the assertion callback
+                done();
+              });
+          });
+      });
+  });
+
+  it(&#x27;should not be able to save an Manager if not logged in&#x27;, function (done) {
+    agent.post(&#x27;/api/managers&#x27;)
+      .send(manager)
+      .expect(403)
+      .end(function (managerSaveErr, managerSaveRes) {
+        // Call the assertion callback
+        done(managerSaveErr);
+      });
+  });
+
+  it(&#x27;should not be able to save an Manager if no name is provided&#x27;, function (done) {
+    // Invalidate name field
+    manager.name = &#x27;&#x27;;
+
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new Manager
+        agent.post(&#x27;/api/managers&#x27;)
+          .send(manager)
+          .expect(400)
+          .end(function (managerSaveErr, managerSaveRes) {
+            // Set message assertion
+            (managerSaveRes.body.message).should.match(&#x27;Please fill Manager name&#x27;);
+
+            // Handle Manager save error
+            done(managerSaveErr);
+          });
+      });
+  });
+
+  it(&#x27;should be able to update an Manager if signed in&#x27;, function (done) {
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new Manager
+        agent.post(&#x27;/api/managers&#x27;)
+          .send(manager)
+          .expect(200)
+          .end(function (managerSaveErr, managerSaveRes) {
+            // Handle Manager save error
+            if (managerSaveErr) {
+              return done(managerSaveErr);
+            }
+
+            // Update Manager name
+            manager.name = &#x27;WHY YOU GOTTA BE SO MEAN?&#x27;;
+
+            // Update an existing Manager
+            agent.put(&#x27;/api/managers/&#x27; + managerSaveRes.body._id)
+              .send(manager)
+              .expect(200)
+              .end(function (managerUpdateErr, managerUpdateRes) {
+                // Handle Manager update error
+                if (managerUpdateErr) {
+                  return done(managerUpdateErr);
+                }
+
+                // Set assertions
+                (managerUpdateRes.body._id).should.equal(managerSaveRes.body._id);
+                (managerUpdateRes.body.name).should.match(&#x27;WHY YOU GOTTA BE SO MEAN?&#x27;);
+
+                // Call the assertion callback
+                done();
+              });
+          });
+      });
+  });
+
+  it(&#x27;should be able to get a list of Managers if not signed in&#x27;, function (done) {
+    // Create new Manager model instance
+    var managerObj = new Manager(manager);
+
+    // Save the manager
+    managerObj.save(function () {
+      // Request Managers
+      request(app).get(&#x27;/api/managers&#x27;)
+        .end(function (req, res) {
+          // Set assertion
+          res.body.should.be.instanceof(Array).and.have.lengthOf(1);
+
+          // Call the assertion callback
+          done();
+        });
+
+    });
+  });
+
+  it(&#x27;should be able to get a single Manager if not signed in&#x27;, function (done) {
+    // Create new Manager model instance
+    var managerObj = new Manager(manager);
+
+    // Save the Manager
+    managerObj.save(function () {
+      request(app).get(&#x27;/api/managers/&#x27; + managerObj._id)
+        .end(function (req, res) {
+          // Set assertion
+          res.body.should.be.instanceof(Object).and.have.property(&#x27;name&#x27;, manager.name);
+
+          // Call the assertion callback
+          done();
+        });
+    });
+  });
+
+  it(&#x27;should return proper error for single Manager with an invalid Id, if not signed in&#x27;, function (done) {
+    // test is not a valid mongoose Id
+    request(app).get(&#x27;/api/managers/test&#x27;)
+      .end(function (req, res) {
+        // Set assertion
+        res.body.should.be.instanceof(Object).and.have.property(&#x27;message&#x27;, &#x27;Manager is invalid&#x27;);
+
+        // Call the assertion callback
+        done();
+      });
+  });
+
+  it(&#x27;should return proper error for single Manager which doesnt exist, if not signed in&#x27;, function (done) {
+    // This is a valid mongoose Id but a non-existent Manager
+    request(app).get(&#x27;/api/managers/559e9cd815f80b4c256a8f41&#x27;)
+      .end(function (req, res) {
+        // Set assertion
+        res.body.should.be.instanceof(Object).and.have.property(&#x27;message&#x27;, &#x27;No Manager with that identifier has been found&#x27;);
+
+        // Call the assertion callback
+        done();
+      });
+  });
+
+  it(&#x27;should be able to delete an Manager if signed in&#x27;, function (done) {
+    agent.post(&#x27;/api/auth/signin&#x27;)
+      .send(credentials)
+      .expect(200)
+      .end(function (signinErr, signinRes) {
+        // Handle signin error
+        if (signinErr) {
+          return done(signinErr);
+        }
+
+        // Get the userId
+        var userId = user.id;
+
+        // Save a new Manager
+        agent.post(&#x27;/api/managers&#x27;)
+          .send(manager)
+          .expect(200)
+          .end(function (managerSaveErr, managerSaveRes) {
+            // Handle Manager save error
+            if (managerSaveErr) {
+              return done(managerSaveErr);
+            }
+
+            // Delete an existing Manager
+            agent.delete(&#x27;/api/managers/&#x27; + managerSaveRes.body._id)
+              .send(manager)
+              .expect(200)
+              .end(function (managerDeleteErr, managerDeleteRes) {
+                // Handle manager error error
+                if (managerDeleteErr) {
+                  return done(managerDeleteErr);
+                }
+
+                // Set assertions
+                (managerDeleteRes.body._id).should.equal(managerSaveRes.body._id);
+
+                // Call the assertion callback
+                done();
+              });
+          });
+      });
+  });
+
+  it(&#x27;should not be able to delete an Manager if not signed in&#x27;, function (done) {
+    // Set Manager user
+    manager.user = user;
+
+    // Create new Manager model instance
+    var managerObj = new Manager(manager);
+
+    // Save the Manager
+    managerObj.save(function () {
+      // Try deleting Manager
+      request(app).delete(&#x27;/api/managers/&#x27; + managerObj._id)
+        .expect(403)
+        .end(function (managerDeleteErr, managerDeleteRes) {
+          // Set message assertion
+          (managerDeleteRes.body.message).should.match(&#x27;User is not authorized&#x27;);
+
+          // Handle Manager error error
+          done(managerDeleteErr);
+        });
+
+    });
+  });
+
+  it(&#x27;should be able to get a single Manager that has an orphaned user reference&#x27;, function (done) {
+    // Create orphan user creds
+    var _creds = {
+      username: &#x27;orphan&#x27;,
+      password: &#x27;M3@n.jsI$Aw3$0m3&#x27;
+    };
+
+    // Create orphan user
+    var _orphan = new User({
+      firstName: &#x27;Full&#x27;,
+      lastName: &#x27;Name&#x27;,
+      displayName: &#x27;Full Name&#x27;,
+      email: &#x27;orphan@test.com&#x27;,
+      username: _creds.username,
+      password: _creds.password,
+      provider: &#x27;local&#x27;
+    });
+
+    _orphan.save(function (err, orphan) {
+      // Handle save error
+      if (err) {
+        return done(err);
+      }
+
+      agent.post(&#x27;/api/auth/signin&#x27;)
+        .send(_creds)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
+
+          // Get the userId
+          var orphanId = orphan._id;
+
+          // Save a new Manager
+          agent.post(&#x27;/api/managers&#x27;)
+            .send(manager)
+            .expect(200)
+            .end(function (managerSaveErr, managerSaveRes) {
+              // Handle Manager save error
+              if (managerSaveErr) {
+                return done(managerSaveErr);
+              }
+
+              // Set assertions on new Manager
+              (managerSaveRes.body.name).should.equal(manager.name);
+              should.exist(managerSaveRes.body.user);
+              should.equal(managerSaveRes.body.user._id, orphanId);
+
+              // force the Manager to have an orphaned user reference
+              orphan.remove(function () {
+                // now signin with valid user
+                agent.post(&#x27;/api/auth/signin&#x27;)
+                  .send(credentials)
+                  .expect(200)
+                  .end(function (err, res) {
+                    // Handle signin error
+                    if (err) {
+                      return done(err);
+                    }
+
+                    // Get the Manager
+                    agent.get(&#x27;/api/managers/&#x27; + managerSaveRes.body._id)
+                      .expect(200)
+                      .end(function (managerInfoErr, managerInfoRes) {
+                        // Handle Manager error
+                        if (managerInfoErr) {
+                          return done(managerInfoErr);
+                        }
+
+                        // Set assertions
+                        (managerInfoRes.body._id).should.equal(managerSaveRes.body._id);
+                        (managerInfoRes.body.name).should.equal(manager.name);
+                        should.equal(managerInfoRes.body.user, undefined);
+
+                        // Call the assertion callback
+                        done();
+                      });
+                  });
+              });
+            });
+        });
+    });
+  });
+
+  afterEach(function (done) {
+    User.remove().exec(function () {
+      Manager.remove().exec(done);
+    });
+  });
+});
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>config\lib\app.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-elements">Elements</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                            </ul>
+                
+                                <ul id="api-elements" class="apis elements">
+                                    <li><a href="../elements/A.html">&lt;A&gt;</a></li>
+                                    <li><a href="../elements/ANY.html">&lt;ANY&gt;</a></li>
+                                    <li><a href="../elements/DETAILS.html">&lt;DETAILS&gt;</a></li>
+                                    <li><a href="../elements/form.html">&lt;form&gt;</a></li>
+                                    <li><a href="../elements/html.html">&lt;html&gt;</a></li>
+                                    <li><a href="../elements/IMG.html">&lt;IMG&gt;</a></li>
+                                    <li><a href="../elements/INPUT.html">&lt;INPUT&gt;</a></li>
+                                    <li><a href="../elements/input.html">&lt;input&gt;</a></li>
+                                    <li><a href="../elements/OPTION.html">&lt;OPTION&gt;</a></li>
+                                    <li><a href="../elements/window,.html">&lt;window,&gt;</a></li>
+                                </ul>
+                
+                            <ul id="api-modules" class="apis modules">
+                                <li><a href="../modules/ng.html">ng</a></li>
+                                <li><a href="../modules/ngMessages.html">ngMessages</a></li>
+                                <li><a href="../modules/ngMock.html">ngMock</a></li>
+                                <li><a href="../modules/ngMockE2E.html">ngMockE2E</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: config\lib\app.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
+
+/**
+ * Module dependencies.
+ */
+var config = require(&#x27;../config&#x27;),
+  mongoose = require(&#x27;./mongoose&#x27;),
+  express = require(&#x27;./express&#x27;),
+  chalk = require(&#x27;chalk&#x27;),
+  seed = require(&#x27;./seed&#x27;);
+
+function seedDB() {
+  if (config.seedDB &amp;&amp; config.seedDB.seed) {
+    console.log(chalk.bold.red(&#x27;Warning:  Database seeding is turned on&#x27;));
+    seed.start();
+  }
+}
+
+// Initialize Models
+mongoose.loadModels(seedDB);
+
+module.exports.loadModels = function loadModels() {
+  mongoose.loadModels();
+};
+
+module.exports.init = function init(callback) {
+  mongoose.connect(function (db) {
+    // Initialize express
+    var app = express.init(db);
+    if (callback) callback(app, db, config);
+
+  });
+};
+
+module.exports.start = function start(callback) {
+  var _this = this;
+
+  _this.init(function (app, db, config) {
+
+    // Start the app by listening on &lt;port&gt;
+    app.listen(config.port, function () {
+
+      // Logging initialization
+      console.log(&#x27;--&#x27;);
+      console.log(chalk.green(&#x27;MAGLE Platform&#x27;));
+      console.log(chalk.green(&#x27;Version:    \t\t0.0.2&#x27;));
+      console.log(chalk.green(&#x27;Environment:\t\t&#x27; + process.env.NODE_ENV));
+      console.log(chalk.green(&#x27;\nPort:\t\t\t\t&#x27; + config.port));
+      console.log(chalk.green(&#x27;Database:\t\t\t&#x27; + config.db.uri));
+      if (process.env.NODE_ENV === &#x27;secure&#x27;) {
+        console.log(chalk.green(&#x27;HTTPs:\t\t\t\ton&#x27;));
+      }
+      console.log(chalk.green(&#x27;App version:\t\t&#x27; + config.meanjs.version));
+      console.log(&#x27;--&#x27;);
+
+      if (callback) callback(app, db, config);
+    });
+
+  });
+
+};
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

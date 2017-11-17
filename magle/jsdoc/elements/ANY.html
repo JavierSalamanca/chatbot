@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ANY - MAGLE Framework</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="..\..\modules\core\client\img\brand\logo.png" title="MAGLE Framework"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-elements">Elements</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                            </ul>
+                
+                                <ul id="api-elements" class="apis elements">
+                                    <li><a href="../elements/A.html">&lt;A&gt;</a></li>
+                                    <li><a href="../elements/ANY.html">&lt;ANY&gt;</a></li>
+                                    <li><a href="../elements/DETAILS.html">&lt;DETAILS&gt;</a></li>
+                                    <li><a href="../elements/form.html">&lt;form&gt;</a></li>
+                                    <li><a href="../elements/html.html">&lt;html&gt;</a></li>
+                                    <li><a href="../elements/IMG.html">&lt;IMG&gt;</a></li>
+                                    <li><a href="../elements/INPUT.html">&lt;INPUT&gt;</a></li>
+                                    <li><a href="../elements/input.html">&lt;input&gt;</a></li>
+                                    <li><a href="../elements/OPTION.html">&lt;OPTION&gt;</a></li>
+                                    <li><a href="../elements/window,.html">&lt;window,&gt;</a></li>
+                                </ul>
+                
+                            <ul id="api-modules" class="apis modules">
+                                <li><a href="../modules/ng.html">ng</a></li>
+                                <li><a href="../modules/ngMessages.html">ngMessages</a></li>
+                                <li><a href="../modules/ngMock.html">ngMock</a></li>
+                                <li><a href="../modules/ngMockE2E.html">ngMockE2E</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1>&lt;ANY&gt;</h1>
+<div class="box meta">
+        <div class="foundat">
+            Defined in: <a href="../files/public_lib_angular_angular.js.html#l20532"><code>public\lib\angular\angular.js:20532</code></a>
+        </div>
+
+            Module: <a href="../modules/ng.html">ng</a>
+
+</div>
+
+
+<div class="box intro">
+    <p>The <code>ngBind</code> attribute tells Angular to replace the text content of the specified HTML element
+with the value of a given expression, and to update the text content when the value of that
+expression changes.</p>
+<p>Typically, you don't use <code>ngBind</code> directly, but instead you use the double curly markup like
+<code>{{ expression }}</code> which is similar but less verbose.</p>
+<p>It is preferable to use <code>ngBind</code> instead of <code>{{ expression }}</code> if a template is momentarily
+displayed by the browser in its raw state before Angular compiles it. Since <code>ngBind</code> is an
+element attribute, it makes the bindings invisible to the user while the page is loading.</p>
+<p>An alternative solution to this problem would be using the
+{@link ng.directive:ngCloak ngCloak} directive.</p>
+
+
+    <ul class="definitions">
+
+    </ul>
+</div>
+
+<div class="example">
+    <h2>Example</h2>
+
+    <div class="example-content">
+        <p>Enter a name in the Live Preview text box; the greeting below the text box changes instantly.
+<example module="bindExample">
+<file name="index.html">
+<script>
+angular.module('bindExample', [])
+.controller('ExampleController', ['$scope', function($scope) {
+$<a href="http://scope.name">scope.name</a> = 'Whirled';
+}]);
+</script>
+<div ng-controller="ExampleController">
+Enter name: <input type="text" ng-model="name"><br>
+Hello <span ng-bind="name"></span>!
+</div>
+</file>
+<file name="protractor.js" type="protractor">
+it('should check ng-bind', function() {
+var nameInput = element(by.model('name'));</p>
+<pre class="code prettyprint"><code>    expect(element(by.binding('name')).getText()).toBe('Whirled');
+    nameInput.clear();
+    nameInput.sendKeys('world');
+    expect(element(by.binding('name')).getText()).toBe('world');
+  });
+&lt;/file&gt;
+</code></pre>
+  </example>
+    </div>
+</div>
+
+
+<div class="index-section attrs">
+    <h2>Attributes</h2>
+
+    <p>This element has no defined attributes.</p>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>
